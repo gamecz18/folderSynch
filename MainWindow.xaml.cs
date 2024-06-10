@@ -74,23 +74,33 @@ namespace folderSynch
         private async void synchButton_Click(object sender, RoutedEventArgs e)
         {
             synchButton.Background = new SolidColorBrush(Colors.Green);
+            sych();
             
+            synchButton.Background = new SolidColorBrush(Colors.Red);
+        }
+
+        async void sych() {
             await Task.Run(() =>
             {
                 try
                 {
-
+                    synch.checkFiles(folders.sourseFolder, true, ref synch.sourceInfo);
+                    synch.checkFiles(folders.destinacionFolder, false, ref synch.desInfo);
+                    synch.copyFiles();
                 }
                 catch (System.Exception err)
                 {
 
-                    MessageBox.Show(err.Message, "Nastala Chybu U synch" ) ;
+                    MessageBox.Show(err.Message, "Nastala Chybu U synch");
                 }
-                synch.checkFiles(folders.sourseFolder, true, ref synch.sourceInfo);
-                synch.checkFiles(folders.destinacionFolder, false, ref synch.desInfo);
-                synch.copyFiles();
+                
             });
-            synchButton.Background = new SolidColorBrush(Colors.Red);
+
+
+
         }
+
     }
+
+
 }
