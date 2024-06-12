@@ -57,7 +57,7 @@
         </ListView>
         <Label Content="Počet s.:" Name="sourceCount"  Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch"  />
         <Label Content="Cesta: " Grid.ColumnSpan="2" Panel.ZIndex="3" Name="sourcePath" Grid.Column="0" Grid.Row="4" Margin="0,28,0,5" />
-        
+
 
 
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="2"  Grid.RowSpan="2" Grid.Row="5">
@@ -70,17 +70,18 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <Button x:Name="synchButton" Grid.Column="0" Padding="0,0,0,2" Content="synch"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontFamily="Bahnschrift SemiBold" Click="synchButton_Click" />
-            <Button Grid.Column="1" Padding="0,0,0,2" Content="synch on backround"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            <Button Grid.Column="1" x:Name="synchOnBackButton" Padding="0,0,0,2" Content="synch on backround"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             <Button Grid.Column="2" Padding="0,0,0,2" Content="Button"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
 
 
 
         </Grid>
         <StackPanel Grid.Column="2" Panel.ZIndex="0" Grid.Row="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <Label Content="Počet s.:" x:Name="desCount"/>
-        <Label Content="Cesta: " HorizontalAlignment="Left" x:Name="desPath" Width="398"/>
+            <Label Content="Počet s.:" x:Name="desCount"/>
+            <Label Content="Cesta: " HorizontalAlignment="Left" x:Name="desPath" Width="398"/>
 
         </StackPanel>
+        <Button x:Name="reloadButton" Grid.Column="3" Content="Reload" HorizontalAlignment="Right" Grid.Row="4" VerticalAlignment="Top" Width="61" Click="reloadButton_Click"/>
 
     </Grid>
 </Window>

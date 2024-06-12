@@ -1,6 +1,8 @@
 ﻿using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using Path = System.IO.Path;
 
@@ -71,22 +73,29 @@ namespace folderSynch
         }
 
 
-        private async void synchButton_Click(object sender, RoutedEventArgs e)
+        private  void synchButton_Click(object sender, RoutedEventArgs e)
         {
-            synchButton.Background = new SolidColorBrush(Colors.Green);
+          
+       
             sych();
             
-            synchButton.Background = new SolidColorBrush(Colors.Red);
+           
         }
 
         async void sych() {
-            await Task.Run(() =>
+            synchButton.Background = new SolidColorBrush(Colors.Green);
+            disEnabElement(false);
+            await Task.Run(async () =>
             {
+                
                 try
                 {
+                    folders.pocetZmen = 0;
                     synch.checkFiles(folders.sourseFolder, true, ref synch.sourceInfo);
                     synch.checkFiles(folders.destinacionFolder, false, ref synch.desInfo);
-                    synch.copyFiles(prubeh);
+                    await Task.Run(() =>synch.copyFiles(prubeh));
+                    disEnabElement(true);
+                    
                 }
                 catch (System.Exception err)
                 {
@@ -95,11 +104,52 @@ namespace folderSynch
                 }
                 
             });
+          
+            synchButton.Background = new SolidColorBrush(Colors.Red);
+
+
+
+        }
+        public void disEnabElement(bool operand)
+        {
+            this.synchButton.Dispatcher.Invoke( System.Windows.Threading.DispatcherPriority.Normal, () => {
+                synchButton.IsEnabled = operand;
+            });
+            this.synchButton.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, () => {
+                buttonDes.IsEnabled = operand;
+            });
+            this.synchButton.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, () => {
+                buttonSec.IsEnabled = operand;
+            });
+            this.synchButton.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, () => {
+               synchOnBackButton.IsEnabled = operand;
+            });
+            
 
 
 
         }
 
+
+
+        private async void  reloadButton_Click(object sender, RoutedEventArgs e)
+        {
+            desctiFilesView.Items.Clear();
+            int pocet = 0;
+            await Task.Run(() =>
+            {
+
+                foreach (var item in Directory.GetFiles(folders.destinacionFolder))
+                {
+                    pocet++;
+
+                    this.desctiFilesView.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
+                        () => { desctiFilesView.Items.Add(Path.GetFileName(item)); });
+
+                }
+            });
+            desCount.Content = $"Počet s.: {pocet}";
+        }
     }
 
 

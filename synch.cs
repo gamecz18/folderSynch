@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace folderSynch
@@ -44,7 +45,7 @@ namespace folderSynch
                         date = File.GetLastWriteTime(item),
                         velikost = new FileInfo(item).Length
                     });
-                    folders.pocetZmen++;
+                   
                     continue;
 
                 }
@@ -58,7 +59,7 @@ namespace folderSynch
                         operace = op.smazat,
                         velikost = new FileInfo(item).Length
                     });
-                   
+                    folders.pocetZmen++;
                     continue;
                 }
 
@@ -68,7 +69,7 @@ namespace folderSynch
                     date = File.GetLastWriteTime(item),
                     velikost = new FileInfo(item).Length
                 });
-                folders.pocetZmen++;
+                
 
             }
 
@@ -90,6 +91,14 @@ namespace folderSynch
               
             });
 
+            foreach (filesInfo item in desInfo)
+            {
+                if (item.operace == op.smazat)
+                {
+                    zvetsitHodnotu(pb1);
+                    File.Delete(folders.destinacionFolder + "\\" + item.fileName);
+                }
+            }
 
             foreach (filesInfo item in sourceInfo)
             {
@@ -106,14 +115,7 @@ namespace folderSynch
                 }
 
             }
-            foreach (filesInfo item in desInfo)
-            {
-                if (item.operace == op.smazat)
-                {
-                    zvetsitHodnotu(pb1);
-                    File.Delete(folders.destinacionFolder + "\\" + item.fileName);
-                }
-            }
+            
             sourceInfo.Clear();
             desInfo.Clear();
 
@@ -147,6 +149,7 @@ namespace folderSynch
                     sourceInfo[index].copy = true;
                     sourceInfo[index].operace = op.existuji;
                     sourceInfo[index].copyDes = folders.destinacionFolder;
+                    folders.pocetZmen++;
 
                 }
                 else
@@ -156,6 +159,7 @@ namespace folderSynch
 
                         sourceInfo[index].operace = op.prepsat;
                         sourceInfo[index].copyDes = folders.destinacionFolder;
+                        folders.pocetZmen++;
                     }
                 }
 
