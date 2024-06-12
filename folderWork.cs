@@ -16,6 +16,7 @@ namespace folderSynch
     {
         public static string sourseFolder = null;
         public static string destinacionFolder = null;
+        public static int pocetZmen = 0;
         
 
 

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace folderSynch
 {
@@ -32,7 +32,7 @@ namespace folderSynch
         public static List<filesInfo> desInfo = new List<filesInfo>();
         static public void checkFiles(string folder, bool source, ref List<filesInfo> files)
         {
-            
+
             foreach (var item in Directory.GetFiles(folder))
             {
 
@@ -42,10 +42,11 @@ namespace folderSynch
                     {
                         fileName = Path.GetFileName(item),
                         date = File.GetLastWriteTime(item),
-                        operace = op.existuji,
                         velikost = new FileInfo(item).Length
-                    }); 
+                    });
+                    folders.pocetZmen++;
                     continue;
+
                 }
 
                 if (!sourceInfo.Any(x => x.fileName == Path.GetFileName(item)))
@@ -57,6 +58,7 @@ namespace folderSynch
                         operace = op.smazat,
                         velikost = new FileInfo(item).Length
                     });
+                   
                     continue;
                 }
 
@@ -64,29 +66,41 @@ namespace folderSynch
                 {
                     fileName = Path.GetFileName(item),
                     date = File.GetLastWriteTime(item),
-                    operace = op.existuji,
                     velikost = new FileInfo(item).Length
                 });
+                folders.pocetZmen++;
 
             }
-                
-                //Thread.Sleep(10);
 
-            
+            //Thread.Sleep(10);
+
+
         }
 
-        static public void copyFiles()
+        static public async void copyFiles(ProgressBar pb1)
         {
-            checkExistance();
+            await Task.Run(() =>
+            {
+                checkExistance();
+            });
+            pb1.Dispatcher.Invoke(() =>
+            {
+                pb1.Maximum = folders.pocetZmen;
+                pb1.Value = 0;
+              
+            });
+
 
             foreach (filesInfo item in sourceInfo)
             {
-                if (item.copy)
+                if (item.copy&& item.operace == op.existuji)
                 {
+                    zvetsitHodnotu(pb1);
                     File.Copy(folders.sourseFolder + "\\" + item.fileName, item.copyDes + "\\" + item.fileName);
                 }
                 else if (item.operace == op.prepsat)
                 {
+                    zvetsitHodnotu(pb1);
                     File.Copy(folders.sourseFolder + "\\" + item.fileName, item.copyDes + "\\" + item.fileName, true);
 
                 }
@@ -96,6 +110,7 @@ namespace folderSynch
             {
                 if (item.operace == op.smazat)
                 {
+                    zvetsitHodnotu(pb1);
                     File.Delete(folders.destinacionFolder + "\\" + item.fileName);
                 }
             }
@@ -106,14 +121,22 @@ namespace folderSynch
         }
 
 
+        static void zvetsitHodnotu(ProgressBar pb1)
+        {
+            pb1.Dispatcher.Invoke(() =>
+            {
+                pb1.Value++;
+            });
 
+
+        }
 
 
         static void checkExistance()
         {
             if (desInfo.Count == 0)
             {
-                sourceInfo.ForEach(item => { item.copy = true; item.copyDes = folders.destinacionFolder; });
+                sourceInfo.ForEach(item => { item.copy = true; item.copyDes = folders.destinacionFolder; item.operace = op.existuji; });
                 return;
 
             }
@@ -122,6 +145,7 @@ namespace folderSynch
                 if (!desInfo.Any(a => a.fileName == item.fileName))
                 {
                     sourceInfo[index].copy = true;
+                    sourceInfo[index].operace = op.existuji;
                     sourceInfo[index].copyDes = folders.destinacionFolder;
 
                 }
@@ -129,12 +153,12 @@ namespace folderSynch
                 {
                     if (desInfo.Find(x => x.fileName == item.fileName).velikost != item.velikost)
                     {
-                       
+
                         sourceInfo[index].operace = op.prepsat;
                         sourceInfo[index].copyDes = folders.destinacionFolder;
                     }
                 }
-                
+
             }
 
 

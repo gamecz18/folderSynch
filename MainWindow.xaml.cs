@@ -86,12 +86,12 @@ namespace folderSynch
                 {
                     synch.checkFiles(folders.sourseFolder, true, ref synch.sourceInfo);
                     synch.checkFiles(folders.destinacionFolder, false, ref synch.desInfo);
-                    synch.copyFiles();
+                    synch.copyFiles(prubeh);
                 }
                 catch (System.Exception err)
                 {
 
-                    MessageBox.Show(err.Message, "Nastala Chybu U synch");
+                    MessageBox.Show(err.Message, "Nastala Chybu u synch");
                 }
                 
             });
