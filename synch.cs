@@ -10,7 +10,8 @@ namespace folderSynch
     enum op
     {
         existuji,
-        smazat
+        smazat,
+        prepsat
     }
 
 
@@ -22,6 +23,7 @@ namespace folderSynch
         public op operace { get; set; }
         public string copyDes { get; set; }
         public bool copy { get; set; }
+        public long velikost { get; set; }
 
     }
     static class synch
@@ -40,8 +42,9 @@ namespace folderSynch
                     {
                         fileName = Path.GetFileName(item),
                         date = File.GetLastWriteTime(item),
-                        operace = 0
-                    });
+                        operace = op.existuji,
+                        velikost = new FileInfo(item).Length
+                    }); 
                     continue;
                 }
 
@@ -51,7 +54,8 @@ namespace folderSynch
                     {
                         fileName = Path.GetFileName(item),
                         date = File.GetLastWriteTime(item),
-                        operace = op.smazat
+                        operace = op.smazat,
+                        velikost = new FileInfo(item).Length
                     });
                     continue;
                 }
@@ -60,7 +64,8 @@ namespace folderSynch
                 {
                     fileName = Path.GetFileName(item),
                     date = File.GetLastWriteTime(item),
-                    operace = op.existuji
+                    operace = op.existuji,
+                    velikost = new FileInfo(item).Length
                 });
 
             }
@@ -79,6 +84,11 @@ namespace folderSynch
                 if (item.copy)
                 {
                     File.Copy(folders.sourseFolder + "\\" + item.fileName, item.copyDes + "\\" + item.fileName);
+                }
+                else if (item.operace == op.prepsat)
+                {
+                    File.Copy(folders.sourseFolder + "\\" + item.fileName, item.copyDes + "\\" + item.fileName, true);
+
                 }
 
             }
@@ -115,6 +125,16 @@ namespace folderSynch
                     sourceInfo[index].copyDes = folders.destinacionFolder;
 
                 }
+                else
+                {
+                    if (desInfo.Find(x => x.fileName == item.fileName).velikost != item.velikost)
+                    {
+                       
+                        sourceInfo[index].operace = op.prepsat;
+                        sourceInfo[index].copyDes = folders.destinacionFolder;
+                    }
+                }
+                
             }
 
 
