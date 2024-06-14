@@ -13,9 +13,11 @@ namespace folderSynch
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static MainWindow Instance = new MainWindow();  
         public MainWindow()
         {
             InitializeComponent();
+            Instance = this;
         }
 
         public delegate void MethodInvoker();
@@ -83,7 +85,14 @@ namespace folderSynch
         }
 
         async void sych() {
-            synchButton.Background = new SolidColorBrush(Colors.Green);
+
+            if (folders.destinacionFolder == null ||folders.sourseFolder == null)
+            {
+                System.Windows.Forms.MessageBox.Show("Jedna šložka nebo více složek není vybráno", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+                return;
+            }
+            
+            
             disEnabElement(false);
             await Task.Run(async () =>
             {
@@ -94,18 +103,18 @@ namespace folderSynch
                     synch.checkFiles(folders.sourseFolder, true, ref synch.sourceInfo);
                     synch.checkFiles(folders.destinacionFolder, false, ref synch.desInfo);
                     await Task.Run(() =>synch.copyFiles(prubeh));
-                    disEnabElement(true);
+                    
                     
                 }
                 catch (System.Exception err)
                 {
 
-                    MessageBox.Show(err.Message, "Nastala Chybu u synch");
+                    MessageBox.Show(err.Message, "Nastala chybu u synch");
                 }
                 
             });
           
-            synchButton.Background = new SolidColorBrush(Colors.Red);
+            
 
 
 

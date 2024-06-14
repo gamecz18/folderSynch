@@ -115,7 +115,7 @@ namespace folderSynch
                 }
 
             }
-            
+            MainWindow.Instance.disEnabElement(true);
             sourceInfo.Clear();
             desInfo.Clear();
 
