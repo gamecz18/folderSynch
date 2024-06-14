@@ -143,6 +143,8 @@ namespace folderSynch
 
         private async void  reloadButton_Click(object sender, RoutedEventArgs e)
         {
+
+            if (folders.destinacionFolder == null) return;
             desctiFilesView.Items.Clear();
             int pocet = 0;
             await Task.Run(() =>
