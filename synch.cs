@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace folderSynch
 {
@@ -33,7 +34,7 @@ namespace folderSynch
         public static List<filesInfo> desInfo = new List<filesInfo>();
         static public void checkFiles(string folder, bool source, ref List<filesInfo> files)
         {
-
+            
             foreach (var item in Directory.GetFiles(folder))
             {
 
@@ -106,12 +107,13 @@ namespace folderSynch
                 {
                     zvetsitHodnotu(pb1);
                     File.Copy(folders.sourseFolder + "\\" + item.fileName, item.copyDes + "\\" + item.fileName);
+                    File.SetLastWriteTime(item.copyDes + "\\" + item.fileName, item.date);
                 }
                 else if (item.operace == op.prepsat)
                 {
                     zvetsitHodnotu(pb1);
                     File.Copy(folders.sourseFolder + "\\" + item.fileName, item.copyDes + "\\" + item.fileName, true);
-
+                    File.SetLastWriteTime(item.copyDes + "\\" + item.fileName, item.date);
                 }
 
             }
