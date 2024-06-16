@@ -161,6 +161,11 @@ namespace folderSynch
             });
             desCount.Content = $"Počet s.: {pocet}";
         }
+
+        private void saveSesButton_Click(object sender, RoutedEventArgs e)
+        {
+            folders.saveSettings();
+        }
     }
 
 
