@@ -18,9 +18,13 @@ namespace folderSynch
         {
             InitializeComponent();
             Instance = this;
+            folders.loadSettings(); 
         }
 
         public delegate void MethodInvoker();
+
+
+        
 
         private async void buttonSec_Click(object sender, RoutedEventArgs e)
         {
@@ -110,6 +114,7 @@ namespace folderSynch
                 {
 
                     MessageBox.Show(err.Message, "Nastala chybu u synch");
+                    disEnabElement(true);
                 }
                 
             });
