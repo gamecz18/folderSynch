@@ -1,9 +1,10 @@
-﻿using System.IO;
-using System.Threading;
+﻿using System;
+using System.ComponentModel;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
+using System.Windows.Forms;
+using Forms = System.Windows.Forms;
 using Path = System.IO.Path;
 
 namespace folderSynch
@@ -13,18 +14,40 @@ namespace folderSynch
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static MainWindow Instance = new MainWindow();  
+        public static MainWindow Instance = new MainWindow();
+
+        private readonly Forms.NotifyIcon _nf;
         public MainWindow()
         {
             InitializeComponent();
             Instance = this;
-            folders.loadSettings(); 
+            folders.loadSettings();
+            _nf = new Forms.NotifyIcon();
+            _nf.Icon = new System.Drawing.Icon("images/icon.ico");
+            _nf.Text = "Folder Synch APP";
+            _nf.Click += NotifyIcon_Click;
+            _nf.Visible = true;
+
+        }
+
+        private void NotifyIcon_Click(object sender, EventArgs e)
+        {
+            
+            this.Visibility = Visibility.Visible;
+            
         }
 
         public delegate void MethodInvoker();
 
-
         
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            _nf.Dispose();
+            base.OnClosing(e);
+        }
+
+
+
 
         private async void buttonSec_Click(object sender, RoutedEventArgs e)
         {
@@ -52,7 +75,7 @@ namespace folderSynch
 
         private async void buttonDes_Click(object sender, RoutedEventArgs e)
         {
-            
+
             if (folderWork.selecFolder(ref folders.destinacionFolder))
             {
 
@@ -79,66 +102,71 @@ namespace folderSynch
         }
 
 
-        private  void synchButton_Click(object sender, RoutedEventArgs e)
+        private void synchButton_Click(object sender, RoutedEventArgs e)
         {
-          
-       
+
+
             sych();
-            
-           
+
+
         }
 
-        async void sych() {
+        async void sych()
+        {
 
-            if (folders.destinacionFolder == null ||folders.sourseFolder == null)
+            if (folders.destinacionFolder == null || folders.sourseFolder == null)
             {
                 System.Windows.Forms.MessageBox.Show("Jedna šložka nebo více složek není vybráno", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
                 return;
             }
-            
-            
+
+
             disEnabElement(false);
             await Task.Run(async () =>
             {
-                
+
                 try
                 {
                     folders.pocetZmen = 0;
                     synch.checkFiles(folders.sourseFolder, true, ref synch.sourceInfo);
                     synch.checkFiles(folders.destinacionFolder, false, ref synch.desInfo);
-                    await Task.Run(() =>synch.copyFiles(prubeh));
-                    
-                    
+                    await Task.Run(() => synch.copyFiles(prubeh));
+
+
                 }
                 catch (System.Exception err)
                 {
 
-                    MessageBox.Show(err.Message, "Nastala chybu u synch");
+                    Forms.MessageBox.Show(err.Message, "Nastala chybu u synch");
                     disEnabElement(true);
                 }
-                
+
             });
-          
-            
+
+
 
 
 
         }
         public void disEnabElement(bool operand)
         {
-            this.synchButton.Dispatcher.Invoke( System.Windows.Threading.DispatcherPriority.Normal, () => {
+            this.synchButton.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, () =>
+            {
                 synchButton.IsEnabled = operand;
             });
-            this.synchButton.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, () => {
+            this.synchButton.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, () =>
+            {
                 buttonDes.IsEnabled = operand;
             });
-            this.synchButton.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, () => {
+            this.synchButton.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, () =>
+            {
                 buttonSec.IsEnabled = operand;
             });
-            this.synchButton.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, () => {
-               synchOnBackButton.IsEnabled = operand;
+            this.synchButton.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, () =>
+            {
+                synchOnBackButton.IsEnabled = operand;
             });
-            
+
 
 
 
@@ -146,7 +174,7 @@ namespace folderSynch
 
 
 
-        private async void  reloadButton_Click(object sender, RoutedEventArgs e)
+        private async void reloadButton_Click(object sender, RoutedEventArgs e)
         {
 
             if (folders.destinacionFolder == null) return;
