@@ -13,5 +13,7 @@ namespace folderSynch
     /// </summary>
     public partial class App : Application
     {
+
+        
     }
 }

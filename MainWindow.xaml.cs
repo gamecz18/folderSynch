@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
 using Forms = System.Windows.Forms;
 using Path = System.IO.Path;
 
@@ -27,14 +26,15 @@ namespace folderSynch
             _nf.Text = "Folder Synch APP";
             _nf.Click += NotifyIcon_Click;
             _nf.Visible = true;
+            this.Visibility = Visibility.Visible;
 
         }
 
         private void NotifyIcon_Click(object sender, EventArgs e)
         {
-            
             this.Visibility = Visibility.Visible;
-            
+
+
         }
 
         public delegate void MethodInvoker();
@@ -174,11 +174,14 @@ namespace folderSynch
 
 
 
-        private async void reloadButton_Click(object sender, RoutedEventArgs e)
+        public  async void  reload()
         {
 
             if (folders.destinacionFolder == null) return;
-            desctiFilesView.Items.Clear();
+            this.desctiFilesView.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
+                      () => {
+                          desctiFilesView.Items.Clear();
+                      });
             int pocet = 0;
             await Task.Run(() =>
             {
@@ -192,7 +195,14 @@ namespace folderSynch
 
                 }
             });
-            desCount.Content = $"Počet s.: {pocet}";
+            this.desCount.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal, () => { desCount.Content = $"Počet s.: {pocet}"; });
+                
+
+        }
+        private void reloadButton_Click(object sender, RoutedEventArgs e)
+        {
+            reload();
+            
         }
 
         private void saveSesButton_Click(object sender, RoutedEventArgs e)
