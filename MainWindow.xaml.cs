@@ -19,13 +19,14 @@ namespace folderSynch
         public MainWindow()
         {
             InitializeComponent();
+            Instance = this;
             folders.loadSettings();
             _nf = new Forms.NotifyIcon();
             _nf.Icon = new System.Drawing.Icon("images/icon.ico");
             _nf.Text = "Folder Synch APP";
             _nf.ContextMenuStrip = new Forms.ContextMenuStrip();
             _nf.ContextMenuStrip.Items.Add("Stop", null, NotifyIcon_Click);
-            Instance = this;
+            
             
 
         }
