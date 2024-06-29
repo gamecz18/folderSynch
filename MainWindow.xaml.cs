@@ -13,26 +13,27 @@ namespace folderSynch
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static MainWindow Instance = new MainWindow();
+        public static MainWindow Instance;
 
         private readonly Forms.NotifyIcon _nf;
         public MainWindow()
         {
             InitializeComponent();
-            Instance = this;
             folders.loadSettings();
             _nf = new Forms.NotifyIcon();
             _nf.Icon = new System.Drawing.Icon("images/icon.ico");
             _nf.Text = "Folder Synch APP";
-            _nf.Click += NotifyIcon_Click;
-            _nf.Visible = true;
-            this.Visibility = Visibility.Visible;
+            _nf.ContextMenuStrip = new Forms.ContextMenuStrip();
+            _nf.ContextMenuStrip.Items.Add("Stop", null, NotifyIcon_Click);
+            Instance = this;
+            
 
         }
 
         private void NotifyIcon_Click(object sender, EventArgs e)
         {
             this.Visibility = Visibility.Visible;
+            _nf.Visible = false;
 
 
         }
@@ -208,6 +209,32 @@ namespace folderSynch
         private void saveSesButton_Click(object sender, RoutedEventArgs e)
         {
             folders.saveSettings();
+        }
+
+
+        void createIcon()
+        {
+
+
+         
+            
+            
+            //_nf.Click += NotifyIcon_Click;
+            _nf.Visible = true;
+
+            //this.Visibility = Visibility.Visible;
+        }
+
+        void cancleIcon()
+        {
+            _nf.Visible =false;
+        }
+
+
+        private void synchOnBackButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Visibility = Visibility.Collapsed;
+            createIcon();
         }
     }
 
