@@ -251,9 +251,7 @@ namespace folderSynch
                 {
                     sych();
 
-                    Thread.Sleep(
-
-                        9000);
+                    Thread.Sleep(folders.timeToSynch);
                     if (ct1.IsCancellationRequested)
                     {
                         ct1.ThrowIfCancellationRequested();

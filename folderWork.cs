@@ -11,6 +11,7 @@ namespace folderSynch
     {
         public static string sourseFolder = null;
         public static string destinacionFolder = null;
+        public static int timeToSynch = 15000;
         public static int pocetZmen = 0;
         public static string jsemCesta { get { return Directory.GetCurrentDirectory(); } set { jsemCesta = value; } }
 
@@ -26,6 +27,7 @@ namespace folderSynch
 
                 st1.WriteLine($"Folders out:* {sourseFolder} ");
                 st1.WriteLine($"Folders in:* {destinacionFolder}");
+                st1.WriteLine($"Time to Synch:* {timeToSynch}");
 
 
 
@@ -42,7 +44,7 @@ namespace folderSynch
                 using (StreamReader st1 = new StreamReader(jsemCesta + "\\" + "setting.txt"))
                 {
                     string line;
-                    string[] parts = new string[2];
+                    string[] parts = new string[3];
                     int pomoc = 0;
                     while ((line = st1.ReadLine()) != null)
                     {
@@ -51,6 +53,7 @@ namespace folderSynch
                     }
                     folders.sourseFolder = parts[0].Trim();
                     folders.destinacionFolder = parts[1].Trim();
+                    folders.timeToSynch = int.Parse(parts[2].Trim());
 
                 }
                 MainWindow.Instance.sourcePath.Content = $"Cesta: : {folders.sourseFolder}";
