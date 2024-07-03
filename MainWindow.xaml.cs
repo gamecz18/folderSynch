@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Forms = System.Windows.Forms;
@@ -20,20 +21,18 @@ namespace folderSynch
         {
             InitializeComponent();
             Instance = this;
-            folders.loadSettings();
             _nf = new Forms.NotifyIcon();
             _nf.Icon = new System.Drawing.Icon("images/icon.ico");
             _nf.Text = "Folder Synch APP";
             _nf.ContextMenuStrip = new Forms.ContextMenuStrip();
             _nf.ContextMenuStrip.Items.Add("Stop", null, NotifyIcon_Click);
             
-            
-
         }
 
         private void NotifyIcon_Click(object sender, EventArgs e)
         {
             this.Visibility = Visibility.Visible;
+            cts1.Cancel();
             _nf.Visible = false;
 
 
@@ -116,9 +115,9 @@ namespace folderSynch
         async void sych()
         {
 
-            if (folders.destinacionFolder == null || folders.sourseFolder == null)
+            if (string.IsNullOrEmpty( folders.destinacionFolder)  || string.IsNullOrEmpty( folders.sourseFolder))
             {
-                System.Windows.Forms.MessageBox.Show("Jedna šložka nebo více složek není vybráno", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+                System.Windows.Forms.MessageBox.Show("One folder or more folders are not selected.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
                 return;
             }
 
@@ -139,7 +138,7 @@ namespace folderSynch
                 catch (System.Exception err)
                 {
 
-                    Forms.MessageBox.Show(err.Message, "Nastala chybu u synch");
+                    Forms.MessageBox.Show(err.Message, "Nastala chybu u synch", Forms.MessageBoxButtons.OK, Forms.MessageBoxIcon.Asterisk);
                     disEnabElement(true);
                 }
 
@@ -215,13 +214,10 @@ namespace folderSynch
 
         void createIcon()
         {
-
-
-         
-            
-            
+                        
             //_nf.Click += NotifyIcon_Click;
             _nf.Visible = true;
+            synchOnBackgourd();
 
             //this.Visibility = Visibility.Visible;
         }
@@ -234,8 +230,90 @@ namespace folderSynch
 
         private void synchOnBackButton_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(folders.destinacionFolder) || string.IsNullOrEmpty(folders.sourseFolder))
+            {
+                System.Windows.Forms.MessageBox.Show("One folder or more folders are not selected.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+                return;
+            }
             this.Visibility = Visibility.Collapsed;
             createIcon();
+
+        }
+
+        CancellationToken ct1 = new CancellationToken(); 
+        CancellationTokenSource cts1 = new CancellationTokenSource();
+        void synchOnBackgourd()
+        {
+            Task.Run(() => {
+
+
+                while (true)
+                {
+                    sych();
+
+                    Thread.Sleep(
+
+                        9000);
+                    if (ct1.IsCancellationRequested)
+                    {
+                        ct1.ThrowIfCancellationRequested();
+                    }
+                  
+                }
+                                    
+            
+            }, cts1.Token);
+        
+
+        
+        }
+
+        private async void loadSesButton_Click(object sender, RoutedEventArgs e)
+        {
+            folders.loadSettings();
+            if (string.IsNullOrEmpty( folders.sourseFolder))
+            {
+
+                
+                sourceCount.Content = $"Počet s. ";
+                sourcePath.Content = $"Cesta:  ";
+
+
+            }
+            else
+            {
+                sourceFilesView.Items.Clear();
+                int pocet = 0;
+                await Task.Run(() =>
+                {
+
+                    foreach (var item in Directory.GetFiles(folders.sourseFolder))
+                    {
+                        pocet++;
+
+                        this.sourceFilesView.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
+                            () => { sourceFilesView.Items.Add(Path.GetFileName(item)); });
+                    }
+                });
+                sourceCount.Content = $"Počet s.: {pocet}";
+                sourcePath.Content = $"Cesta: : {folders.sourseFolder}";
+
+            }
+            if (string.IsNullOrEmpty(folders.destinacionFolder))
+            {
+                desctiFilesView.Items.Clear();
+                desCount.Content = $"Počet s. ";
+                desPath.Content = $"Cesta:  ";
+            }
+            else
+            {
+                reload();
+            }
+            
+
+           
+            
+
         }
     }
 

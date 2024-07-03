@@ -49,8 +49,8 @@ namespace folderSynch
                         parts[pomoc] = line.Split(new string[] { ":*" }, System.StringSplitOptions.None)[1];
                         pomoc++;
                     }
-                    folders.sourseFolder = parts[0];
-                    folders.destinacionFolder = parts[1];
+                    folders.sourseFolder = parts[0].Trim();
+                    folders.destinacionFolder = parts[1].Trim();
 
                 }
                 MainWindow.Instance.sourcePath.Content = $"Cesta: : {folders.sourseFolder}";

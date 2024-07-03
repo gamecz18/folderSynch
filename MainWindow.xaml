@@ -73,7 +73,7 @@
             <Button x:Name="synchButton" Grid.Column="0" Padding="0,0,0,2" Content="synch"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontFamily="Bahnschrift SemiBold" Click="synchButton_Click" />
             <Button Grid.Column="1" x:Name="synchOnBackButton" Padding="0,0,0,2" Content="synch on backround"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="synchOnBackButton_Click"/>
             <Button Grid.Column="2" x:Name="saveSesButton"  Padding="0,0,0,2" Content="Save setting"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="saveSesButton_Click"/>
-            <Button Grid.Column="3" x:Name="loadSesButton" Padding="0,0,0,2" Content="Load setting"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            <Button Grid.Column="3" x:Name="loadSesButton" Padding="0,0,0,2" Content="Load setting"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="loadSesButton_Click"/>
 
 
         </Grid>

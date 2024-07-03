@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+
 
 namespace folderSynch
 {
@@ -99,21 +101,37 @@ namespace folderSynch
                     File.Delete(folders.destinacionFolder + "\\" + item.fileName);
                 }
             }
-
+            int chyba = 0;
             foreach (filesInfo item in sourceInfo)
             {
-                if (item.copy&& item.operace == op.existuji)
+                skok:
+                try
                 {
-                    zvetsitHodnotu(pb1);
-                    File.Copy(folders.sourseFolder + "\\" + item.fileName, item.copyDes + "\\" + item.fileName);
-                    File.SetLastWriteTime(item.copyDes + "\\" + item.fileName, item.date);
+                    if (item.copy && item.operace == op.existuji)
+                    {
+                        zvetsitHodnotu(pb1);
+                        File.Copy(folders.sourseFolder + "\\" + item.fileName, item.copyDes + "\\" + item.fileName);
+                        File.SetLastWriteTime(item.copyDes + "\\" + item.fileName, item.date);
+                    }
+                    else if (item.operace == op.prepsat)
+                    {
+                        zvetsitHodnotu(pb1);
+                        File.Copy(folders.sourseFolder + "\\" + item.fileName, item.copyDes + "\\" + item.fileName, true);
+                        File.SetLastWriteTime(item.copyDes + "\\" + item.fileName, item.date);
+                    }
                 }
-                else if (item.operace == op.prepsat)
+                catch (Exception err)
                 {
-                    zvetsitHodnotu(pb1);
-                    File.Copy(folders.sourseFolder + "\\" + item.fileName, item.copyDes + "\\" + item.fileName, true);
-                    File.SetLastWriteTime(item.copyDes + "\\" + item.fileName, item.date);
+                    Thread.Sleep(1000);
+                    if (chyba == 15)
+                    {
+                        chyba = 0;
+                       System.Windows.Forms.MessageBox.Show(err.Message, "Erro", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Asterisk);
+                    }
+                    chyba++;
+                    goto skok;
                 }
+                
 
             }
             MainWindow.Instance.reload();
