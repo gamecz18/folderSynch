@@ -11,7 +11,7 @@ namespace folderSynch
     {
         public static string sourseFolder = null;
         public static string destinacionFolder = null;
-        public static int timeToSynch = 15000;
+        public static int timeToSynch = 900000;
         public static int pocetZmen = 0;
         public static string jsemCesta { get { return Directory.GetCurrentDirectory(); } set { jsemCesta = value; } }
 
