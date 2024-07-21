@@ -13,20 +13,34 @@ namespace folderSynch
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
+    {//slouží pro pracovaní s tímto oknem u jiných knihove(UI prvky)
         public static MainWindow Instance;
 
+        //slouží pro vytvoření notifikační ikony
         private readonly Forms.NotifyIcon _nf;
         public MainWindow()
         {
             InitializeComponent();
+            folders.loadSettings();
+            
+            //slouží pro pracovaní s tímto oknem u jiných knihove(UI prvky)
             Instance = this;
+            //notifikační ikona
             _nf = new Forms.NotifyIcon();
             _nf.Icon = new System.Drawing.Icon("images/icon.ico");
             _nf.Text = "Folder Synch APP";
             _nf.ContextMenuStrip = new Forms.ContextMenuStrip();
-            _nf.ContextMenuStrip.Items.Add("Stop", null, NotifyIcon_Click);
+            if (!string.IsNullOrEmpty(folders.jmenoInstance))
+            {
+                _nf.ContextMenuStrip.Items.Add(folders.jmenoInstance);
+            }
             
+            _nf.ContextMenuStrip.Items.Add("Stop", null, NotifyIcon_Click);
+
+            if (folders.bootOnStartup)
+            {
+                synchOnBack();
+            }
         }
 
         private void NotifyIcon_Click(object sender, EventArgs e)
@@ -230,6 +244,12 @@ namespace folderSynch
 
         private void synchOnBackButton_Click(object sender, RoutedEventArgs e)
         {
+
+            synchOnBack();
+        }
+        void synchOnBack()
+        {
+
             if (string.IsNullOrEmpty(folders.destinacionFolder) || string.IsNullOrEmpty(folders.sourseFolder))
             {
                 System.Windows.Forms.MessageBox.Show("One folder or more folders are not selected.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
@@ -237,8 +257,8 @@ namespace folderSynch
             }
             this.Visibility = Visibility.Collapsed;
             createIcon();
-
         }
+
 
         CancellationToken ct1 = new CancellationToken(); 
         CancellationTokenSource cts1 = new CancellationTokenSource();
@@ -312,6 +332,17 @@ namespace folderSynch
            
             
 
+        }
+
+        private void settingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            settingsWindow st1 = new settingsWindow();
+            
+            if (st1.ShowDialog() == true)
+            {
+               
+
+            }
         }
     }
 
