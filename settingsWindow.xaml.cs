@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace folderSynch
 {
@@ -28,7 +17,27 @@ namespace folderSynch
                 time_to_Synch.Items.Add(i).ToString();
 
             }
-            time_to_Synch.SelectedIndex = 14;
+            if (folders.timeToSynch == null)
+            {
+                time_to_Synch.SelectedIndex = 14;
+            }
+            else
+            {
+                time_to_Synch.SelectedIndex = (folders.timeToSynch/ 60000) - 1;
+
+            }
+            if (!string.IsNullOrEmpty(folders.jmenoInstance))
+            {
+                inputTextBox.Text = folders.jmenoInstance;
+            }
+            if (folders.bootOnStartup != null)
+            {
+                bootChechBox.IsChecked = folders.bootOnStartup;
+            }
+          
+           
+            
+           
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -36,7 +45,7 @@ namespace folderSynch
             saveSeting();
             folders.saveSettings();
             DialogResult = true;
-            this.Close();   
+            this.Close();
         }
 
 
@@ -56,9 +65,20 @@ namespace folderSynch
             {
                 folders.bootOnStartup = false;
             }
-            
 
 
+
+        }
+
+        private void bootChechBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+            if (string.IsNullOrEmpty(folders.destinacionFolder) || string.IsNullOrEmpty(folders.sourseFolder))
+            {
+                System.Windows.Forms.MessageBox.Show("One folder or more folders are not selected.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning);
+                bootChechBox.IsChecked = false;
+
+            }
         }
     }
 }
