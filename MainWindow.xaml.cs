@@ -192,7 +192,7 @@ namespace folderSynch
         public  async void  reload()
         {
 
-            if (folders.destinacionFolder == null) return;
+            if (string.IsNullOrEmpty( folders.destinacionFolder)) return;
             this.desctiFilesView.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
                       () => {
                           desctiFilesView.Items.Clear();

@@ -45,7 +45,7 @@
             <CheckBox x:Name="bootChechBox" Margin="0,20,0,0" FontSize="16" Content="Turn on whe boot up" Checked="bootChechBox_Checked"></CheckBox>
 
         </StackPanel>
-        <Button Content="Save" HorizontalAlignment="Right"  VerticalAlignment="Bottom" Click="Button_Click" Margin="0,0,10,10"/>
+        <Button Content="Save" FontSize="30" HorizontalAlignment="Right"  VerticalAlignment="Bottom" Click="Button_Click" Margin="0,0,10,10" Height="43" Width="113"/>
 
 
     </Grid>
